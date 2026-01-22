@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment Variables (CRITICAL: Never push these)
+# Secrets
+.env
+client/.env
+server/.env
+.env.local
+.env.production
+
+# Build output
+client/node_modules/
+server/node_modules/
+client/dist/
+server/build/
+
+# System Files
+.DS_Store
+Thumbs.db
+
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Performance reports
+lighthouse-report.json
+
+# Custom ignored folders
+.continue/
+memory-bank/
+MISSION_CONTROL.md
