@@ -5,7 +5,7 @@ A high-performance, responsive portfolio built with the MERN stack (MongoDB, Exp
 ## 🚀 Live Demo
 
 - **Frontend:** [https://fullstack-dev-portfolio.netlify.app](https://fullstack-dev-portfolio.netlify.app)
-- **Backend API:** [https://fullstack-dev-portfolio-8f8f.onrender.com/health](https://fullstack-dev-portfolio-8f8f.onrender.com/health)
+- **Backend API:** [https://fullstack-dev-portfolio-8f8f.onrender.com](https://fullstack-dev-portfolio-8f8f.onrender.com)
 
 ## 📊 Performance & Optimization
 
