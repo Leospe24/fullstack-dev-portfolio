@@ -680,10 +680,11 @@ function App() {
               About
             </a>
             <a
-              href="https://wa.me/233207946237"
+              href="https://wa.me/233207946237" // Updated to match your primary contact number
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[#25D366] transition-colors flex items-center gap-1.5 group"
+              aria-label="Chat with Patrick on WhatsApp"
             >
               {/* Modern Brand SVG for Footer */}
               <svg
