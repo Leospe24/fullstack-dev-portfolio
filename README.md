@@ -1,18 +1,67 @@
 # Patrick Anim | Full-Stack Portfolio
 
-A high-performance, responsive portfolio built with the MERN stack (MongoDB, Express, React, Node.js) and styled with Tailwind CSS.
+A high-performance, responsive portfolio built with the MERN stack (MongoDB, Express, React, Node.js) and styled with Tailwind CSS. This project showcases my focus on UI/UX excellence, web accessibility, and backend integration.
 
 ## 🚀 Live Demo
-- **Frontend:** [Your-Netlify-URL-Here]
-- **Backend API:** [Your-Render-URL-Here]
+
+- **Frontend:** [https://fullstack-dev-portfolio.netlify.app](https://fullstack-dev-portfolio.netlify.app)
+- **Backend API:** [https://portfolio-backend-9p3k.onrender.com](https://portfolio-backend-9p3k.onrender.com)
+
+## 📊 Performance & Optimization
+
+- **Lighthouse Score:** 100/100 (Desktop Performance)
+- **Accessibility:** WCAG 2.1 Compliant
+- **Resume Score:** 92/100 (Optimized for ATS)
 
 ## 🛠️ Tech Stack
-- **Frontend:** React, Framer Motion, Tailwind CSS, Lucide Icons.
-- **Backend:** Node.js, Express, Resend (Email), MongoDB Atlas.
-- **Deployment:** Netlify (Frontend) & Render (Backend).
+
+- **Frontend:** React 18, Framer Motion (Animations), Tailwind CSS, Lucide Icons
+- **Backend:** Node.js, Express, Resend (Email Service), MongoDB Atlas
+- **Deployment:** Netlify (Frontend) & Render (Backend)
 
 ## ⚙️ Local Setup
-1. Clone the repo: `git clone [https://github.com/Leospe24/fullstack-dev-portfolio.git]`
-2. Install dependencies: `npm install`
-3. Create a `.env` file with your `MONGO_URI` and `RESEND_API_KEY`.
-4. Run locally: `npm run dev`
+
+1. **Clone the repo:**
+   ```bash
+   git clone [https://github.com/Leospe24/fullstack-dev-portfolio.git](https://github.com/Leospe24/fullstack-dev-portfolio.git)
+   ```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+### 3. Environment Variables
+
+Create a `.env` file in the root directory and add the following:
+
+```env
+MONGO_URI=your_mongodb_connection_string
+RESEND_API_KEY=your_resend_api_key
+```
+
+4. **Run locally:**
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## 📂 Featured Projects
+
+### [Developer Resource Tracker](https://github.com/Leospe24/dev-resource-tracker)
+
+A full-stack application that improved resource organization efficiency by **35%**. Features secure authentication and 12+ RESTful API endpoints.
+
+### Car Detailing Management System
+
+A C# and MSSQL-based desktop application designed to digitize business operations for **100+ monthly clients**, reducing administrative retrieval time by **25%**.
+
+### [School Management System](https://github.com/Leospe24/school-ms)
+
+A high-performance C++ console application utilizing custom data structures for the efficient management of **500+ student records**.
+
+## 📧 Contact
+
+- **Email:** [abrahampatrick18@gmail.com](mailto:abrahampatrick18@gmail.com)
+- **LinkedIn:** [linkedin.com/in/patrick-anim-dev](https://linkedin.com/in/patrick-anim-dev)
+- **GitHub:** [github.com/Leospe24](https://github.com/Leospe24)
