@@ -104,6 +104,10 @@ app.post("/api/projects", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("Portfolio API is running...");
+});
+
 // Health Check Route (The one your frontend is already pinging!)
 app.get("/health", (req, res) => {
   const isConnected = mongoose.connection.readyState === 1;

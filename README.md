@@ -5,7 +5,7 @@ A high-performance, responsive portfolio built with the MERN stack (MongoDB, Exp
 ## 🚀 Live Demo
 
 - **Frontend:** [https://fullstack-dev-portfolio.netlify.app](https://fullstack-dev-portfolio.netlify.app)
-- **Backend API:** [https://portfolio-backend-9p3k.onrender.com](https://portfolio-backend-9p3k.onrender.com)
+- **Backend API:** [https://fullstack-dev-portfolio-8f8f.onrender.com/health](https://fullstack-dev-portfolio-8f8f.onrender.com/health)
 
 ## 📊 Performance & Optimization
 
@@ -55,10 +55,6 @@ A full-stack application that improved resource organization efficiency by **35%
 ### Car Detailing Management System
 
 A C# and MSSQL-based desktop application designed to digitize business operations for **100+ monthly clients**, reducing administrative retrieval time by **25%**.
-
-### [School Management System](https://github.com/Leospe24/school-ms)
-
-A high-performance C++ console application utilizing custom data structures for the efficient management of **500+ student records**.
 
 ## 📧 Contact
 
