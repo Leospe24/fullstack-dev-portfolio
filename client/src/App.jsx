@@ -17,7 +17,6 @@ import {
   MessageSquare,
   Phone,
   Loader2,
-  MessageCircle, // Added for WhatsApp icon
 } from "lucide-react";
 import { PROFILE_DATA } from "./constants";
 
@@ -38,22 +37,42 @@ function App() {
   const [showArchive, setShowArchive] = useState(false);
   const [loadingProjects, setLoadingProjects] = useState(true);
 
-  // Fetch projects from your backend
+  // Fetch projects with error handling
   useEffect(() => {
     const fetchProjects = async () => {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
         const response = await fetch(
           `${import.meta.env.VITE_API_URL}/api/projects`,
+          {
+            signal: controller.signal,
+            headers: {
+              Accept: "application/json",
+            },
+          },
         );
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
         const data = await response.json();
         setProjects(data);
       } catch (error) {
         console.error("Error fetching projects:", error);
+        // You could set a fallback state here
       } finally {
         setLoadingProjects(false);
       }
     };
-    fetchProjects();
+
+    // Delay fetch slightly to prioritize initial render
+    const timer = setTimeout(fetchProjects, 100);
+    return () => clearTimeout(timer);
   }, []);
 
   const featuredProjects = projects.filter((p) => p.isFeatured);
@@ -109,11 +128,19 @@ function App() {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 ${isDark ? "bg-[#0f172a] text-white selection:bg-cyan-400 selection:text-slate-900" : "bg-slate-50 text-slate-900 selection:bg-cyan-500 selection:text-white"}`}
+      className={`min-h-screen transition-colors duration-300 ${
+        isDark
+          ? "bg-[#0f172a] text-white selection:bg-cyan-400 selection:text-slate-900"
+          : "bg-slate-50 text-slate-900 selection:bg-cyan-500 selection:text-white"
+      }`}
     >
       {/* Navigation */}
       <nav
-        className={`sticky top-0 z-50 p-6 flex justify-between items-center max-w-6xl mx-auto border-b backdrop-blur-md ${isDark ? "border-white/5 bg-[#0f172a]/80" : "border-slate-200 bg-slate-50/80"}`}
+        className={`sticky top-0 z-50 p-6 flex justify-between items-center max-w-6xl mx-auto border-b backdrop-blur-md ${
+          isDark
+            ? "border-white/5 bg-[#0f172a]/80"
+            : "border-slate-200 bg-slate-50/80"
+        }`}
       >
         <div className="flex items-center gap-4">
           <Motion.h1
@@ -127,7 +154,9 @@ function App() {
         </div>
 
         <div
-          className={`hidden md:flex space-x-8 text-sm font-medium ${isDark ? "text-slate-300" : "text-slate-600"}`}
+          className={`hidden md:flex space-x-8 text-sm font-medium ${
+            isDark ? "text-slate-300" : "text-slate-600"
+          }`}
         >
           <a href="#projects" className="hover:text-cyan-400 transition-colors">
             {" "}
@@ -158,14 +187,22 @@ function App() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setTheme(isDark ? "light" : "dark")}
-            className={`p-2 rounded-full transition-all ${isDark ? "bg-cyan-400/10 text-cyan-400 hover:bg-cyan-400/20" : "bg-slate-200 text-slate-700 hover:bg-slate-300"}`}
+            className={`p-2 rounded-full transition-all ${
+              isDark
+                ? "bg-cyan-400/10 text-cyan-400 hover:bg-cyan-400/20"
+                : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+            }`}
             aria-label="Toggle dark mode"
           >
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
           <button
             onClick={() => setIsContactOpen(true)}
-            className={`px-5 py-2 rounded-full border transition-all text-sm font-bold ${isDark ? "bg-cyan-400/10 text-cyan-400 border-cyan-400/20 hover:bg-cyan-400/20" : "bg-cyan-600/10 text-cyan-700 border-cyan-600/20 hover:bg-cyan-600/20"}`}
+            className={`px-5 py-2 rounded-full border transition-all text-sm font-bold ${
+              isDark
+                ? "bg-cyan-400/10 text-cyan-400 border-cyan-400/20 hover:bg-cyan-400/20"
+                : "bg-cyan-600/10 text-cyan-700 border-cyan-600/20 hover:bg-cyan-600/20"
+            }`}
             aria-label="Open contact form"
           >
             Hire Me
@@ -191,7 +228,9 @@ function App() {
               </span>
             </h2>
             <p
-              className={`max-w-2xl text-lg md:text-xl mb-12 leading-relaxed ${isDark ? "text-slate-300" : "text-slate-700"}`}
+              className={`max-w-2xl text-lg md:text-xl mb-12 leading-relaxed ${
+                isDark ? "text-slate-300" : "text-slate-700"
+              }`}
             >
               {PROFILE_DATA.heroDescription}
             </p>
@@ -205,7 +244,11 @@ function App() {
               <a
                 href="/LEO_RESUME.pdf"
                 download="Patrick_Anim_Resume.pdf"
-                className={`px-8 py-4 rounded-2xl font-bold transition-transform hover:scale-105 flex items-center gap-2 ${isDark ? "bg-slate-800 border border-slate-700 text-white" : "bg-white border border-slate-200 text-slate-900 shadow-sm"}`}
+                className={`px-8 py-4 rounded-2xl font-bold transition-transform hover:scale-105 flex items-center gap-2 ${
+                  isDark
+                    ? "bg-slate-800 border border-slate-700 text-white"
+                    : "bg-white border border-slate-200 text-slate-900 shadow-sm"
+                }`}
               >
                 Download Resume
                 <Download size={18} />
@@ -225,11 +268,15 @@ function App() {
             <h2 className="text-4xl font-bold mb-4 flex items-center gap-4">
               Technical Projects
               <span
-                className={`h-px w-24 ${isDark ? "bg-slate-800" : "bg-slate-200"}`}
+                className={`h-px w-24 ${
+                  isDark ? "bg-slate-800" : "bg-slate-200"
+                }`}
               ></span>
             </h2>
             <p
-              className={`text-lg ${isDark ? "text-slate-400" : "text-slate-600"} max-w-2xl`}
+              className={`text-lg ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              } max-w-2xl`}
             >
               A curated selection of my work, ranging from full-stack
               applications to system utilities.
@@ -240,10 +287,14 @@ function App() {
         {loadingProjects ? (
           <div className="flex flex-col justify-center items-center py-32">
             <Loader2
-              className={`w-10 h-10 animate-spin ${isDark ? "text-cyan-400" : "text-cyan-600"}`}
+              className={`w-10 h-10 animate-spin ${
+                isDark ? "text-cyan-400" : "text-cyan-600"
+              }`}
             />
             <p
-              className={`mt-4 font-medium animate-pulse ${isDark ? "text-slate-500" : "text-slate-400"}`}
+              className={`mt-4 font-medium animate-pulse ${
+                isDark ? "text-slate-500" : "text-slate-400"
+              }`}
             >
               Syncing with database...
             </p>
@@ -270,11 +321,13 @@ function App() {
                     </div>
                   )}
 
-                  {/* Project Image */}
+                  {/* Project Image - Added loading="lazy" and width/height attributes */}
                   <img
                     src={project.imageUrl}
                     alt={project.title}
                     loading="lazy"
+                    width="600"
+                    height="600"
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90 group-hover:opacity-100"
                   />
 
@@ -340,12 +393,16 @@ function App() {
               <div className="mt-24">
                 <div className="flex items-center gap-4 mb-12">
                   <h3
-                    className={`text-xl font-bold ${isDark ? "text-slate-400" : "text-slate-500"}`}
+                    className={`text-xl font-bold ${
+                      isDark ? "text-slate-400" : "text-slate-500"
+                    }`}
                   >
                     Legacy Archive
                   </h3>
                   <div
-                    className={`h-px flex-1 ${isDark ? "bg-slate-800/50" : "bg-slate-100"}`}
+                    className={`h-px flex-1 ${
+                      isDark ? "bg-slate-800/50" : "bg-slate-100"
+                    }`}
                   ></div>
                   <button
                     onClick={() => setShowArchive(!showArchive)}
@@ -360,7 +417,9 @@ function App() {
                     {showArchive ? "Show Less" : "Explore More"}
                     <ChevronDown
                       size={18}
-                      className={`transition-transform duration-300 ${showArchive ? "rotate-180" : ""}`}
+                      className={`transition-transform duration-300 ${
+                        showArchive ? "rotate-180" : ""
+                      }`}
                     />
                   </button>
                 </div>
@@ -415,23 +474,29 @@ function App() {
       {/* About Section */}
       <section
         id="about"
-        className={`py-24 px-6 max-w-7xl mx-auto border-t scroll-mt-20 ${isDark ? "border-slate-800/50" : "border-slate-100"}`}
+        className={`py-24 px-6 max-w-7xl mx-auto border-t scroll-mt-20 ${
+          isDark ? "border-slate-800/50" : "border-slate-100"
+        }`}
       >
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="relative group">
             {/* Glow Effect */}
             <div className="absolute -inset-4 bg-linear-to-tr from-blue-600 to-cyan-400 rounded-3xl blur-2xl opacity-10 group-hover:opacity-20 transition-opacity"></div>
 
-            {/* Profile Image Container - Added w_600 to Cloudinary URL for optimization */}
+            {/* Profile Image Container - Optimized with w_400 for mobile */}
             <div
-              className={`relative aspect-square rounded-3xl overflow-hidden border-2 shadow-2xl ${isDark ? "border-slate-800" : "border-white"}`}
+              className={`relative aspect-square rounded-3xl overflow-hidden border-2 shadow-2xl ${
+                isDark ? "border-slate-800" : "border-white"
+              }`}
             >
               <img
-                src="https://res.cloudinary.com/dush99zlh/image/upload/f_auto,q_auto,w_600/v1768755771/leo_zsgwak.png"
+                src="https://res.cloudinary.com/dush99zlh/image/upload/f_auto,q_auto,w_400/v1768755771/leo_zsgwak.png"
+                srcSet="https://res.cloudinary.com/dush99zlh/image/upload/f_auto,q_auto,w_400/v1768755771/leo_zsgwak.png 400w, https://res.cloudinary.com/dush99zlh/image/upload/f_auto,q_auto,w_600/v1768755771/leo_zsgwak.png 600w"
+                sizes="(max-width: 768px) 400px, 600px"
                 alt="Patrick Anim - Software Engineer"
                 loading="lazy"
-                width={600}
-                height={600}
+                width="600"
+                height="600"
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
               />
             </div>
@@ -440,7 +505,9 @@ function App() {
             <div className="absolute -bottom-6 -right-6 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800">
               <p className="text-4xl font-black text-blue-600">IPMC</p>
               <p
-                className={`text-[10px] uppercase tracking-[0.2em] font-bold ${isDark ? "text-slate-400" : "text-slate-500"}`}
+                className={`text-[10px] uppercase tracking-[0.2em] font-bold ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}
               >
                 Certified Engineer
               </p>
@@ -449,7 +516,11 @@ function App() {
 
           <div>
             <div
-              className={`inline-block px-4 py-1.5 mb-6 rounded-full border ${isDark ? "bg-blue-900/30 border-blue-800 text-blue-400" : "bg-blue-600/10 border-blue-200 text-blue-700"}`}
+              className={`inline-block px-4 py-1.5 mb-6 rounded-full border ${
+                isDark
+                  ? "bg-blue-900/30 border-blue-800 text-blue-400"
+                  : "bg-blue-600/10 border-blue-200 text-blue-700"
+              }`}
             >
               <span className="text-sm font-bold">The Developer</span>
             </div>
@@ -460,34 +531,42 @@ function App() {
               </span>
             </h2>
             <p
-              className={`text-lg mb-6 leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}
+              className={`text-lg mb-6 leading-relaxed ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              }`}
             >
               {PROFILE_DATA.aboutDescription}
             </p>
 
             <div className="grid grid-cols-2 gap-6 mt-8">
               <div>
-                {/* Changed h4 to h3 for proper heading hierarchy */}
                 <h3
-                  className={`font-bold mb-1 italic text-sm underline decoration-cyan-400/30 ${isDark ? "text-white" : "text-slate-900"}`}
+                  className={`font-bold mb-1 italic text-sm underline decoration-cyan-400/30 ${
+                    isDark ? "text-white" : "text-slate-900"
+                  }`}
                 >
                   Technical Logic
                 </h3>
                 <p
-                  className={`text-xs font-medium ${isDark ? "text-slate-400" : "text-slate-500"}`}
+                  className={`text-xs font-medium ${
+                    isDark ? "text-slate-400" : "text-slate-500"
+                  }`}
                 >
                   {PROFILE_DATA.technicalLogic}
                 </p>
               </div>
               <div>
-                {/* Changed h4 to h3 for proper heading hierarchy */}
                 <h3
-                  className={`font-bold mb-1 italic text-sm underline decoration-cyan-400/30 ${isDark ? "text-white" : "text-slate-900"}`}
+                  className={`font-bold mb-1 italic text-sm underline decoration-cyan-400/30 ${
+                    isDark ? "text-white" : "text-slate-900"
+                  }`}
                 >
                   UI Execution
                 </h3>
                 <p
-                  className={`text-xs font-medium ${isDark ? "text-slate-400" : "text-slate-500"}`}
+                  className={`text-xs font-medium ${
+                    isDark ? "text-slate-400" : "text-slate-500"
+                  }`}
                 >
                   {PROFILE_DATA.uiExecution}
                 </p>
@@ -500,7 +579,9 @@ function App() {
       {/* Skills Section */}
       <section
         id="skills"
-        className={`py-24 px-6 max-w-7xl mx-auto border-t scroll-mt-20 ${isDark ? "border-slate-800/50" : "border-slate-100"}`}
+        className={`py-24 px-6 max-w-7xl mx-auto border-t scroll-mt-20 ${
+          isDark ? "border-slate-800/50" : "border-slate-100"
+        }`}
       >
         <div className="text-center mb-16">
           <h3 className="text-3xl font-bold mb-4">Technical Arsenal</h3>
@@ -537,7 +618,11 @@ function App() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
               viewport={{ once: true }}
-              className={`p-6 rounded-3xl border ${isDark ? "bg-slate-900/50 border-white/5" : "bg-white border-slate-200 shadow-sm"} hover:border-cyan-400/50 transition-colors`}
+              className={`p-6 rounded-3xl border ${
+                isDark
+                  ? "bg-slate-900/50 border-white/5"
+                  : "bg-white border-slate-200 shadow-sm"
+              } hover:border-cyan-400/50 transition-colors`}
             >
               <div className="mb-4">{group.icon}</div>
               <h4 className="font-bold mb-4">{group.name}</h4>
@@ -553,17 +638,24 @@ function App() {
         </div>
       </section>
 
-      {/* Contact Section */}
+      {/* Contact Section - FIXED CONTRAST ISSUES */}
       <section
         id="contact"
-        className={`py-24 px-6 max-w-7xl mx-auto border-t scroll-mt-20 ${isDark ? "border-slate-800/50" : "border-slate-100"}`}
+        className={`py-24 px-6 max-w-7xl mx-auto border-t scroll-mt-20 ${
+          isDark ? "border-slate-800/50" : "border-slate-100"
+        }`}
       >
         <div className="grid md:grid-cols-2 gap-16">
           <div>
             <h2 className="text-4xl font-bold mb-6">
               Let's <span className="text-cyan-500">connect.</span>
             </h2>
-            <p className="text-lg text-slate-500 mb-8 leading-relaxed font-medium">
+            {/* FIXED: Changed text-slate-500 to text-slate-400 for dark mode */}
+            <p
+              className={`text-lg mb-8 leading-relaxed font-medium ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              }`}
+            >
               I am available for frontend roles and freelance collaborations.
               Reach out via email or phone.
             </p>
@@ -574,12 +666,19 @@ function App() {
                   <Mail size={24} />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                  {/* FIXED: Changed text-slate-500 to text-slate-400 for dark mode */}
+                  <p
+                    className={`text-xs font-bold uppercase tracking-widest ${
+                      isDark ? "text-slate-400" : "text-slate-500"
+                    }`}
+                  >
                     Email
                   </p>
                   <a
                     href="mailto:abrahampatrick18@gmail.com"
-                    className={`text-lg font-bold hover:text-blue-600 transition-colors ${isDark ? "text-white" : "text-slate-900"}`}
+                    className={`text-lg font-bold hover:text-blue-600 transition-colors ${
+                      isDark ? "text-white" : "text-slate-900"
+                    }`}
                   >
                     abrahampatrick18@gmail.com
                   </a>
@@ -590,12 +689,19 @@ function App() {
                   <Phone size={24} />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                  {/* FIXED: Changed text-slate-500 to text-slate-400 for dark mode */}
+                  <p
+                    className={`text-xs font-bold uppercase tracking-widest ${
+                      isDark ? "text-slate-400" : "text-slate-500"
+                    }`}
+                  >
                     Mobile
                   </p>
                   <a
                     href="tel:+233544443408"
-                    className={`text-lg font-bold hover:text-emerald-600 transition-colors ${isDark ? "text-white" : "text-slate-900"}`}
+                    className={`text-lg font-bold hover:text-emerald-600 transition-colors ${
+                      isDark ? "text-white" : "text-slate-900"
+                    }`}
                   >
                     +233 54 444 3408
                   </a>
@@ -606,7 +712,11 @@ function App() {
                   href="https://github.com/Leospe24"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`p-4 rounded-2xl transition-all ${isDark ? "bg-slate-800 hover:bg-slate-700 text-white" : "bg-white border border-slate-200 hover:bg-slate-50 text-slate-900 shadow-sm"}`}
+                  className={`p-4 rounded-2xl transition-all ${
+                    isDark
+                      ? "bg-slate-800 hover:bg-slate-700 text-white"
+                      : "bg-white border border-slate-200 hover:bg-slate-50 text-slate-900 shadow-sm"
+                  }`}
                   aria-label="Visit GitHub profile"
                 >
                   <GithubIcon size={24} />
@@ -615,7 +725,11 @@ function App() {
                   href="https://linkedin.com/in/patrick-anim-dev"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`p-4 rounded-2xl transition-all ${isDark ? "bg-slate-800 hover:bg-slate-700 text-white" : "bg-white border border-slate-200 hover:bg-slate-50 text-slate-900 shadow-sm"}`}
+                  className={`p-4 rounded-2xl transition-all ${
+                    isDark
+                      ? "bg-slate-800 hover:bg-slate-700 text-white"
+                      : "bg-white border border-slate-200 hover:bg-slate-50 text-slate-900 shadow-sm"
+                  }`}
                   aria-label="Visit LinkedIn profile"
                 >
                   <LinkedinIcon size={24} />
@@ -635,7 +749,9 @@ function App() {
                   {/* Custom High-Quality WhatsApp SVG */}
                   <svg
                     viewBox="0 0 24 24"
-                    className={`w-6 h-6 transition-transform group-hover:rotate-12 ${isDark ? "fill-[#25D366]" : "fill-[#128C7E]"}`}
+                    className={`w-6 h-6 transition-transform group-hover:rotate-12 ${
+                      isDark ? "fill-[#25D366]" : "fill-[#128C7E]"
+                    }`}
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
@@ -646,7 +762,11 @@ function App() {
           </div>
 
           <div
-            className={`p-8 rounded-3xl border shadow-xl ${isDark ? "bg-slate-900/50 border-slate-800" : "bg-white border-slate-100"}`}
+            className={`p-8 rounded-3xl border shadow-xl ${
+              isDark
+                ? "bg-slate-900/50 border-slate-800"
+                : "bg-white border-slate-100"
+            }`}
           >
             <div className="flex items-center gap-3 mb-8">
               <MessageSquare className="text-cyan-500" />
@@ -658,26 +778,39 @@ function App() {
             >
               OPEN CONTACT FORM
             </button>
-            <p className="text-center mt-4 text-xs text-slate-500 italic font-mono font-bold">
+            {/* FIXED: Changed text-slate-500 to text-slate-400 for dark mode */}
+            <p
+              className={`text-center mt-4 text-xs italic font-mono font-bold ${
+                isDark ? "text-slate-400" : "text-slate-500"
+              }`}
+            >
               Standard response time: 24 hours
             </p>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer - FIXED CONTRAST */}
       <footer
-        className={`py-12 border-t ${isDark ? "border-white/5 bg-[#0b1222]" : "border-slate-200 bg-slate-100"}`}
+        className={`py-12 border-t ${
+          isDark
+            ? "border-white/5 bg-[#0b1222]"
+            : "border-slate-200 bg-slate-100"
+        }`}
       >
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          {/* FIXED: Changed text-slate-500 to text-slate-400 for dark mode */}
           <p
-            className={`text-sm italic font-medium ${isDark ? "text-slate-400" : "text-slate-500"}`}
+            className={`text-sm italic font-medium ${
+              isDark ? "text-slate-400" : "text-slate-500"
+            }`}
           >
             © 2026 Patrick Anim. Accra, Ghana.
           </p>
-          {/* Increased text contrast for the links container */}
           <div
-            className={`flex gap-8 text-sm font-bold ${isDark ? "text-slate-300" : "text-slate-600"}`}
+            className={`flex gap-8 text-sm font-bold ${
+              isDark ? "text-slate-300" : "text-slate-600"
+            }`}
           >
             <a
               href="https://github.com/Leospe24"
@@ -695,13 +828,12 @@ function App() {
               About
             </a>
             <a
-              href="https://wa.me/233544443408" // Syncing with your primary number
+              href="https://wa.me/233544443408"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[#25D366] transition-colors flex items-center gap-1.5 group"
               aria-label="Chat with Patrick on WhatsApp"
             >
-              {/* Brand SVG remains the same */}
               <svg
                 viewBox="0 0 24 24"
                 className="w-4 h-4 fill-current transition-transform group-hover:scale-110"
