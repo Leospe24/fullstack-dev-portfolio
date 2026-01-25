@@ -16,6 +16,7 @@ import {
   MessageSquare,
   Phone,
   Loader2,
+  MessageCircle, // Added for WhatsApp icon
 } from "lucide-react";
 import ContactModal from "./components/ContactModal";
 import { PROFILE_DATA } from "./constants";
@@ -60,22 +61,71 @@ function App() {
 
   const isDark = theme === "dark";
 
-return (
-  <div
-    className={`min-h-screen transition-colors duration-300 ${isDark? "bg-[#0f172a] text-white selection:bg-cyan-400 selection:text-slate-900" : "bg-slate-50 text-slate-900 selection:bg-cyan-500 selection:text-white"}`}
-  >
-    {systemHealth && <div>System Health: {systemHealth.status}</div>}
+  // System Health Indicator Component
+  const StatusIndicator = () => {
+    const isUp =
+      systemHealth?.status === "UP" && systemHealth?.database === "CONNECTED";
+    const isPending = !systemHealth;
+
+    const handleClick = () => {
+      if (isUp)
+        alert("🚀 All systems operational. Backend & Database are healthy.");
+      else if (isPending) alert("⏳ Checking system status...");
+      else
+        alert(
+          "⚠️ System maintenance in progress. Backend or Database might be offline.",
+        );
+    };
+
+    return (
+      <div
+        onClick={handleClick}
+        className={`flex items-center gap-2 px-3 py-1 rounded-full border cursor-pointer transition-all ${
+          isDark
+            ? "bg-slate-800/50 border-white/10 hover:bg-slate-700/50"
+            : "bg-slate-200/50 border-slate-300 hover:bg-slate-300/50"
+        }`}
+      >
+        <span className="relative flex h-2 w-2">
+          {isUp && (
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          )}
+          <span
+            className={`relative inline-flex rounded-full h-2 w-2 ${
+              isUp
+                ? "bg-emerald-500"
+                : isPending
+                  ? "bg-amber-500"
+                  : "bg-rose-500"
+            }`}
+          ></span>
+        </span>
+        <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-slate-400">
+          {isUp ? "System Live" : isPending ? "Checking..." : "Offline"}
+        </span>
+      </div>
+    );
+  };
+
+  return (
+    <div
+      className={`min-h-screen transition-colors duration-300 ${isDark ? "bg-[#0f172a] text-white selection:bg-cyan-400 selection:text-slate-900" : "bg-slate-50 text-slate-900 selection:bg-cyan-500 selection:text-white"}`}
+    >
       {/* Navigation */}
       <nav
         className={`sticky top-0 z-50 p-6 flex justify-between items-center max-w-6xl mx-auto border-b backdrop-blur-md ${isDark ? "border-white/5 bg-[#0f172a]/80" : "border-slate-200 bg-slate-50/80"}`}
       >
-        <Motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-xl font-bold tracking-tighter"
-        >
-          PATRICK<span className="text-cyan-400">.DEV</span>
-        </Motion.h1>
+        <div className="flex items-center gap-4">
+          <Motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-xl font-bold tracking-tighter"
+          >
+            PATRICK<span className="text-cyan-400">.DEV</span>
+          </Motion.h1>
+          <StatusIndicator />
+        </div>
+
         <div
           className={`hidden md:flex space-x-8 text-sm font-medium ${isDark ? "text-slate-400" : "text-slate-600"}`}
         >
@@ -91,7 +141,18 @@ return (
           <a href="#contact" className="hover:text-cyan-400 transition-colors">
             Contact
           </a>
+          {/* Updated Resume Link in Nav */}
+          <a
+            href="/LEO_RESUME.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            download="Patrick_Anim_Resume.pdf"
+            className="flex items-center gap-1 text-cyan-400 hover:text-cyan-300 transition-colors"
+          >
+            <Download size={14} /> Resume
+          </a>
         </div>
+
         <div className="flex items-center gap-4">
           <button
             onClick={() => setTheme(isDark ? "light" : "dark")}
@@ -140,11 +201,12 @@ return (
                 View Projects <Code2 size={18} />
               </a>
               <a
-                href="/Patrick_Anim_Resume.pdf"
-                download
+                href="/LEO_RESUME.pdf"
+                download="Patrick_Anim_Resume.pdf"
                 className={`px-8 py-4 rounded-2xl font-bold transition-transform hover:scale-105 flex items-center gap-2 ${isDark ? "bg-slate-800 border border-slate-700 text-white" : "bg-white border border-slate-200 text-slate-900 shadow-sm"}`}
               >
-                Resume PDF <Download size={18} />
+                Download Resume
+                <Download size={18} />
               </a>
             </div>
           </Motion.div>
@@ -529,6 +591,27 @@ return (
                 >
                   <LinkedinIcon size={24} />
                 </a>
+                {/* Modern WhatsApp Link */}
+                <a
+                  href="https://wa.me/233207946237"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`p-4 rounded-2xl transition-all hover:scale-110 flex items-center justify-center group ${
+                    isDark
+                      ? "bg-slate-800 hover:bg-slate-700 hover:shadow-[0_0_20px_rgba(37,211,102,0.3)]"
+                      : "bg-white border border-slate-200 hover:bg-slate-50 shadow-sm"
+                  }`}
+                  aria-label="Chat on WhatsApp"
+                >
+                  {/* Custom High-Quality WhatsApp SVG */}
+                  <svg
+                    viewBox="0 0 24 24"
+                    className={`w-6 h-6 transition-transform group-hover:rotate-12 ${isDark ? "fill-[#25D366]" : "fill-[#128C7E]"}`}
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                  </svg>
+                </a>
               </div>
             </div>
           </div>
@@ -576,6 +659,22 @@ return (
             </a>
             <a href="#about" className="hover:text-cyan-500 transition-colors">
               About
+            </a>
+            <a
+              href="https://wa.me/233207946237"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#25D366] transition-colors flex items-center gap-1.5 group"
+            >
+              {/* Modern Brand SVG for Footer */}
+              <svg
+                viewBox="0 0 24 24"
+                className="w-4 h-4 fill-current transition-transform group-hover:scale-110"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+              </svg>
+              WhatsApp
             </a>
           </div>
         </div>
