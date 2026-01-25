@@ -12,4 +12,7 @@ export const PROFILE_DATA = {
     "Experienced in C#, C++, and JavaScript for complex system design and algorithmic efficiency.",
   uiExecution:
     "Expert in React and Tailwind CSS for crafting pixel-perfect, accessible, and fluid user interfaces.",
+  availability:
+    "Currently open to Full-Stack Engineering opportunities and strategic technical collaborations.",
+  hireText: "Start a Project",
 };

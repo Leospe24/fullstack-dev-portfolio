@@ -34,6 +34,7 @@ function App() {
 
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [projects, setProjects] = useState([]);
+  const [activeProjectId, setActiveProjectId] = useState(null);
   const [showArchive, setShowArchive] = useState(false);
   const [loadingProjects, setLoadingProjects] = useState(true);
 
@@ -119,7 +120,7 @@ function App() {
             }`}
           ></span>
         </span>
-        <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-slate-400">
+        <span className="hidden lg:inline text-[10px] font-bold font-mono uppercase tracking-wider text-slate-400">
           {isUp ? "System Live" : isPending ? "Checking..." : "Offline"}
         </span>
       </div>
@@ -174,14 +175,6 @@ function App() {
             {" "}
             Contact{" "}
           </a>
-          <a
-            href="/LEO_RESUME.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-cyan-400 hover:text-cyan-300 transition-colors"
-          >
-            <Download size={14} /> Resume
-          </a>
         </div>
 
         <div className="flex items-center gap-4">
@@ -205,7 +198,7 @@ function App() {
             }`}
             aria-label="Open contact form"
           >
-            Hire Me
+            {PROFILE_DATA.hireText}
           </button>
         </div>
       </nav>
@@ -305,7 +298,13 @@ function App() {
               {featuredProjects.map((project) => (
                 <div
                   key={project._id}
-                  className={`group relative aspect-square rounded-[2.5rem] overflow-hidden transition-all duration-700 border ${
+                  // MOBILE FIX: Toggle active state on click
+                  onClick={() =>
+                    setActiveProjectId(
+                      activeProjectId === project._id ? null : project._id,
+                    )
+                  }
+                  className={`group relative aspect-square rounded-[2.5rem] overflow-hidden transition-all duration-700 border cursor-pointer ${
                     isDark
                       ? "bg-slate-900 border-white/5 shadow-2xl shadow-black/50"
                       : "bg-white border-slate-200 shadow-xl shadow-slate-200/60"
@@ -321,27 +320,33 @@ function App() {
                     </div>
                   )}
 
-                  {/* Project Image - Added loading="lazy" and width/height attributes */}
                   <img
                     src={project.imageUrl}
                     alt={project.title}
                     loading="lazy"
                     width="600"
                     height="600"
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90 group-hover:opacity-100"
+                    className={`w-full h-full object-cover transition-transform duration-1000 opacity-90 group-hover:opacity-100 
+                ${activeProjectId === project._id ? "scale-110" : "group-hover:scale-110"}`}
                   />
 
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-900/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+                  {/* Gradient Overlay - MOBILE FIX: Visible when activeProjectId matches */}
+                  <div
+                    className={`absolute inset-0 bg-linear-to-t from-slate-950 via-slate-900/40 to-transparent transition-opacity duration-500 
+              ${activeProjectId === project._id ? "opacity-100" : "opacity-90 group-hover:opacity-100"}`}
+                  />
 
                   {/* Content Container */}
                   <div className="absolute inset-0 p-8 flex flex-col justify-end z-20">
-                    <div className="translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                    {/* MOBILE FIX: Translation logic updated for active state */}
+                    <div
+                      className={`transition-transform duration-500 ease-out 
+                ${activeProjectId === project._id ? "translate-y-0" : "translate-y-8 group-hover:translate-y-0"}`}
+                    >
                       <div className="flex justify-between items-center mb-4">
                         <h3 className="text-2xl font-bold text-white tracking-tight">
                           {project.title}
                         </h3>
-                        {/* Action Buttons */}
                         <div className="flex gap-2">
                           {project.liveUrl && (
                             <a
@@ -350,6 +355,7 @@ function App() {
                               rel="noopener noreferrer"
                               className="p-3 bg-cyan-400 text-slate-950 rounded-2xl hover:bg-white hover:scale-110 transition-all shadow-lg"
                               title="Visit Live Site"
+                              onClick={(e) => e.stopPropagation()} // Prevents toggling the card when clicking the link
                             >
                               <ExternalLink size={20} />
                             </a>
@@ -360,19 +366,26 @@ function App() {
                             rel="noopener noreferrer"
                             className="p-3 bg-white/10 backdrop-blur-xl text-white border border-white/20 rounded-2xl hover:bg-white/20 hover:scale-110 transition-all"
                             title="View Source Code"
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <GithubIcon size={20} />
                           </a>
                         </div>
                       </div>
 
-                      {/* Description - Hidden until hover */}
-                      <p className="text-slate-300 text-sm leading-relaxed mb-6 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                      {/* Description - MOBILE FIX: Conditional opacity */}
+                      <p
+                        className={`text-slate-300 text-sm leading-relaxed mb-6 line-clamp-2 transition-opacity duration-500 delay-100 
+                  ${activeProjectId === project._id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                      >
                         {project.description}
                       </p>
 
-                      {/* Tech Stack Chips */}
-                      <div className="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
+                      {/* Tech Stack - MOBILE FIX: Conditional opacity */}
+                      <div
+                        className={`flex flex-wrap gap-2 transition-opacity duration-500 delay-200 
+                  ${activeProjectId === project._id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                      >
                         {project.techStack.map((tech) => (
                           <span
                             key={tech}
@@ -388,21 +401,17 @@ function App() {
               ))}
             </div>
 
-            {/* Archive Section */}
+            {/* Archive Section remains largely the same, but inherits clean styles */}
             {archiveProjects.length > 0 && (
               <div className="mt-24">
                 <div className="flex items-center gap-4 mb-12">
                   <h3
-                    className={`text-xl font-bold ${
-                      isDark ? "text-slate-400" : "text-slate-500"
-                    }`}
+                    className={`text-xl font-bold ${isDark ? "text-slate-400" : "text-slate-500"}`}
                   >
                     Legacy Archive
                   </h3>
                   <div
-                    className={`h-px flex-1 ${
-                      isDark ? "bg-slate-800/50" : "bg-slate-100"
-                    }`}
+                    className={`h-px flex-1 ${isDark ? "bg-slate-800/50" : "bg-slate-100"}`}
                   ></div>
                   <button
                     onClick={() => setShowArchive(!showArchive)}
@@ -417,9 +426,7 @@ function App() {
                     {showArchive ? "Show Less" : "Explore More"}
                     <ChevronDown
                       size={18}
-                      className={`transition-transform duration-300 ${
-                        showArchive ? "rotate-180" : ""
-                      }`}
+                      className={`transition-transform duration-300 ${showArchive ? "rotate-180" : ""}`}
                     />
                   </button>
                 </div>
@@ -470,7 +477,6 @@ function App() {
           </>
         )}
       </section>
-
       {/* About Section */}
       <section
         id="about"
@@ -652,12 +658,9 @@ function App() {
             </h2>
             {/* FIXED: Changed text-slate-500 to text-slate-400 for dark mode */}
             <p
-              className={`text-lg mb-8 leading-relaxed font-medium ${
-                isDark ? "text-slate-400" : "text-slate-600"
-              }`}
+              className={`text-lg mb-8 leading-relaxed font-medium ${isDark ? "text-slate-400" : "text-slate-600"}`}
             >
-              I am available for frontend roles and freelance collaborations.
-              Reach out via email or phone.
+              {PROFILE_DATA.availability} Reach out via email or phone.
             </p>
 
             <div className="space-y-6">
