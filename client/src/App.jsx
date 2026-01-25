@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
+const ContactModal = lazy(() => import("./components/ContactModal"));
 import useSystemHealth from "./hooks/useSystemHealth";
 import { motion as Motion } from "framer-motion";
 import {
@@ -18,7 +19,6 @@ import {
   Loader2,
   MessageCircle, // Added for WhatsApp icon
 } from "lucide-react";
-import ContactModal from "./components/ContactModal";
 import { PROFILE_DATA } from "./constants";
 
 function App() {
@@ -218,99 +218,110 @@ function App() {
         id="projects"
         className="py-24 px-6 max-w-7xl mx-auto scroll-mt-20"
       >
-        <h2 className="text-4xl font-bold mb-16 flex items-center gap-4">
-          Technical Projects{" "}
-          <span
-            className={`h-px flex-1 ${isDark ? "bg-slate-800" : "bg-slate-200"}`}
-          ></span>
-        </h2>
-        {loadingProjects ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2
-              className={`w-8 h-8 animate-spin ${isDark ? "text-cyan-400" : "text-cyan-600"}`}
-            />
-            <span
-              className={`ml-3 text-lg ${isDark ? "text-slate-400" : "text-slate-600"}`}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
+          <div>
+            <h2 className="text-4xl font-bold mb-4 flex items-center gap-4">
+              Technical Projects
+              <span
+                className={`h-px w-24 ${isDark ? "bg-slate-800" : "bg-slate-200"}`}
+              ></span>
+            </h2>
+            <p
+              className={`text-lg ${isDark ? "text-slate-400" : "text-slate-600"} max-w-2xl`}
             >
-              Loading projects...
-            </span>
+              A curated selection of my work, ranging from full-stack
+              applications to system utilities.
+            </p>
+          </div>
+        </div>
+
+        {loadingProjects ? (
+          <div className="flex flex-col justify-center items-center py-32">
+            <Loader2
+              className={`w-10 h-10 animate-spin ${isDark ? "text-cyan-400" : "text-cyan-600"}`}
+            />
+            <p
+              className={`mt-4 font-medium animate-pulse ${isDark ? "text-slate-500" : "text-slate-400"}`}
+            >
+              Syncing with database...
+            </p>
           </div>
         ) : (
           <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
               {featuredProjects.map((project) => (
                 <div
                   key={project._id}
-                  className={`group relative aspect-square rounded-3xl overflow-hidden transition-all duration-300 hover:scale-[1.02] cursor-pointer ${isDark ? "shadow-lg shadow-slate-700/30 hover:shadow-2xl hover:shadow-cyan-400/20" : "shadow-lg shadow-slate-200/50 hover:shadow-2xl hover:shadow-cyan-500/20"}`}
+                  className={`group relative aspect-square rounded-[2.5rem] overflow-hidden transition-all duration-700 border ${
+                    isDark
+                      ? "bg-slate-900 border-white/5 shadow-2xl shadow-black/50"
+                      : "bg-white border-slate-200 shadow-xl shadow-slate-200/60"
+                  }`}
                 >
-                  {/* Always Visible Browser Frame Header */}
-                  <div
-                    className={`absolute top-0 left-0 right-0 z-10 flex items-center gap-1.5 px-4 py-3 backdrop-blur-md ${isDark ? "bg-slate-900/60" : "bg-cyan-600/5"}`}
-                  >
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57] shadow-sm" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e] shadow-sm" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#28c840] shadow-sm" />
-                    <div className="ml-4 h-2 w-24 rounded-full bg-slate-600/50" />
-                  </div>
-
-                  {/* Always Visible Browser Frame Footer with Action Buttons */}
-                  <div
-                    className={`absolute bottom-0 left-0 right-0 z-10 px-4 py-3 backdrop-blur-md ${isDark ? "bg-slate-900/60" : "bg-cyan-600/5"}`}
-                  >
-                    <div className="flex gap-3">
-                      {project.liveUrl && (
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`flex-1 backdrop-blur-sm text-center py-2 rounded-lg font-bold transition-all text-sm border shadow-lg ${isDark ? "bg-blue-600/90 text-white hover:bg-blue-500 border-blue-500/30" : "bg-blue-600 text-white hover:bg-blue-700 border-blue-600"}`}
-                        >
-                          Live Demo
-                        </a>
-                      )}
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`py-2 backdrop-blur-sm rounded-lg font-bold transition-all text-sm shadow-lg ${project.liveUrl ? "px-4" : "flex-1 text-center"} ${isDark ? "border border-slate-400/50 hover:bg-slate-600/50 text-white" : "border border-slate-300 hover:bg-slate-100 text-slate-700"}`}
-                      >
-                        Source
-                      </a>
+                  {/* Status Badge */}
+                  {project.isLive && (
+                    <div className="absolute top-6 right-6 z-30">
+                      <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30 text-emerald-400 text-[10px] font-black rounded-full uppercase tracking-wider">
+                        <div className="w-1 h-1 bg-emerald-400 rounded-full animate-ping" />
+                        Live System
+                      </span>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Sliding Details Panel - Slides from left on hover */}
-                  <div
-                    className={`absolute left-0 top-0 z-20 border-r w-2/3 opacity-0 group-hover:opacity-100 transition-all duration-500 transform -translate-x-full group-hover:translate-x-0 ${isDark ? "bottom-20 bg-slate-900/90 backdrop-blur-sm border-slate-700/50" : "bottom-20 bg-white/95 backdrop-blur-sm border-slate-200/50"}`}
-                  >
-                    <div className="p-4 h-full flex flex-col justify-center">
-                      <div className="flex justify-between items-start mb-2">
-                        <h3
-                          className={`text-lg font-bold ${isDark ? "text-white" : "text-slate-900"}`}
-                        >
+                  {/* Project Image */}
+                  <img
+                    src={project.imageUrl}
+                    alt={project.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90 group-hover:opacity-100"
+                  />
+
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-900/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  {/* Content Container */}
+                  <div className="absolute inset-0 p-8 flex flex-col justify-end z-20">
+                    <div className="translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-2xl font-bold text-white tracking-tight">
                           {project.title}
                         </h3>
-                        {project.isLive && (
-                          <span
-                            className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold animate-pulse border ${isDark ? "bg-emerald-500/30 text-emerald-300 border-emerald-400/50" : "bg-emerald-500/20 text-emerald-700 border-emerald-400/30"}`}
+                        {/* Action Buttons */}
+                        <div className="flex gap-2">
+                          {project.liveUrl && (
+                            <a
+                              href={project.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-3 bg-cyan-400 text-slate-950 rounded-2xl hover:bg-white hover:scale-110 transition-all shadow-lg"
+                              title="Visit Live Site"
+                            >
+                              <ExternalLink size={20} />
+                            </a>
+                          )}
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-3 bg-white/10 backdrop-blur-xl text-white border border-white/20 rounded-2xl hover:bg-white/20 hover:scale-110 transition-all"
+                            title="View Source Code"
                           >
-                            <div
-                              className={`w-1.5 h-1.5 rounded-full ${isDark ? "bg-emerald-400" : "bg-emerald-600"}`}
-                            />
-                            LIVE
-                          </span>
-                        )}
+                            <GithubIcon size={20} />
+                          </a>
+                        </div>
                       </div>
-                      <p
-                        className={`text-sm mb-3 leading-relaxed ${isDark ? "text-slate-200" : "text-slate-600"}`}
-                      >
+
+                      {/* Description - Hidden until hover */}
+                      <p className="text-slate-300 text-sm leading-relaxed mb-6 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
                         {project.description}
                       </p>
-                      <div className="flex flex-wrap gap-1">
+
+                      {/* Tech Stack Chips */}
+                      <div className="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
                         {project.techStack.map((tech) => (
                           <span
                             key={tech}
-                            className={`px-2 py-1 rounded text-xs font-mono border ${isDark ? "bg-cyan-500/20 text-cyan-200 border-cyan-400/30" : "bg-cyan-500/10 text-cyan-700 border-cyan-400/20"}`}
+                            className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-white/5 border border-white/10 text-cyan-300 uppercase tracking-widest"
                           >
                             {tech}
                           </span>
@@ -318,66 +329,74 @@ function App() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Subtle glow effect on hover */}
-                  <div className="absolute inset-0 rounded-3xl bg-linear-to-tr from-cyan-400/0 via-transparent to-blue-500/0 group-hover:from-cyan-400/5 group-hover:to-blue-500/5 transition-all duration-500 pointer-events-none" />
-
-                  <img
-                    src={project.imageUrl}
-                    alt={`Preview of ${project.title}`}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
                 </div>
               ))}
             </div>
 
-            {/* Archive Toggle */}
+            {/* Archive Section */}
             {archiveProjects.length > 0 && (
-              <div className="mt-20 flex flex-col items-center">
-                <button
-                  onClick={() => setShowArchive(!showArchive)}
-                  className={`group flex items-center gap-3 px-8 py-4 rounded-2xl font-bold transition-all border-2 ${showArchive ? "bg-slate-900 text-white border-slate-900" : isDark ? "border-slate-800 text-slate-400 hover:border-cyan-400" : "border-slate-200 text-slate-500 hover:border-blue-600 shadow-sm"}`}
-                >
-                  <span>
-                    {showArchive ? "Hide Archive" : "View Legacy Projects"}
-                  </span>
-                  <div
-                    className={`transition-transform duration-300 ${showArchive ? "rotate-180" : "group-hover:translate-y-1"}`}
+              <div className="mt-24">
+                <div className="flex items-center gap-4 mb-12">
+                  <h3
+                    className={`text-xl font-bold ${isDark ? "text-slate-400" : "text-slate-500"}`}
                   >
-                    <ChevronDown size={20} />
-                  </div>
-                </button>
+                    Legacy Archive
+                  </h3>
+                  <div
+                    className={`h-px flex-1 ${isDark ? "bg-slate-800/50" : "bg-slate-100"}`}
+                  ></div>
+                  <button
+                    onClick={() => setShowArchive(!showArchive)}
+                    className={`group flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${
+                      showArchive
+                        ? "bg-slate-800 text-white"
+                        : isDark
+                          ? "text-slate-400 hover:text-white"
+                          : "text-slate-600 hover:text-blue-600"
+                    }`}
+                  >
+                    {showArchive ? "Show Less" : "Explore More"}
+                    <ChevronDown
+                      size={18}
+                      className={`transition-transform duration-300 ${showArchive ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                </div>
+
                 {showArchive && (
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 text-left w-full animate-in fade-in slide-in-from-top-4 duration-500">
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
                     {archiveProjects.map((project) => (
                       <div
                         key={project._id}
-                        className={`p-6 rounded-2xl border transition-all hover:scale-[1.02] ${isDark ? "bg-slate-900/50 border-slate-800" : "bg-white border-slate-100 shadow-sm"}`}
+                        className={`p-8 rounded-3xl border transition-all hover:border-blue-500/50 ${
+                          isDark
+                            ? "bg-slate-900/40 border-slate-800"
+                            : "bg-white border-slate-100 shadow-sm"
+                        }`}
                       >
-                        <h4 className="font-bold text-lg mb-2">
+                        <h4 className="font-bold text-lg mb-3 tracking-tight">
                           {project.title}
                         </h4>
-                        <p className="text-sm text-slate-500 mb-4">
+                        <p className="text-sm text-slate-500 mb-6 leading-relaxed line-clamp-3">
                           {project.description}
                         </p>
-                        <div className="flex gap-4">
+                        <div className="flex items-center gap-6">
                           <a
                             href={project.githubUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs font-bold text-blue-600 hover:underline"
+                            className="text-xs font-black uppercase tracking-widest text-blue-500 hover:text-blue-400 transition-colors"
                           >
-                            GitHub
+                            Codebase
                           </a>
                           {project.liveUrl && (
                             <a
                               href={project.liveUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs font-bold text-blue-600 hover:underline"
+                              className="text-xs font-black uppercase tracking-widest text-emerald-500 hover:text-emerald-400 transition-colors"
                             >
-                              Live
+                              Deployment
                             </a>
                           )}
                         </div>
@@ -680,11 +699,14 @@ function App() {
         </div>
       </footer>
 
-      <ContactModal
-        isOpen={isContactOpen}
-        onClose={() => setIsContactOpen(false)}
-        isDark={isDark}
-      />
+      {/* Optimized Lazy-Loaded Modal */}
+      <Suspense fallback={null}>
+        <ContactModal
+          isOpen={isContactOpen}
+          onClose={() => setIsContactOpen(false)}
+          isDark={isDark}
+        />
+      </Suspense>
     </div>
   );
 }
