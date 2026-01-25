@@ -76,12 +76,16 @@ export default function ContactModal({ isOpen, onClose, isDark }) {
                   className="text-emerald-500 mx-auto mb-4"
                 />
                 <h3 className="text-xl font-bold">Message Received!</h3>
-                <p className="text-slate-500">I'll get back to you shortly.</p>
+                <p className={isDark ? "text-slate-300" : "text-slate-600"}>
+                  I'll get back to you shortly.
+                </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-500">
+                  <label
+                    className={`text-sm font-bold ${isDark ? "text-slate-300" : "text-slate-700"}`}
+                  >
                     Your Name
                   </label>
                   <input

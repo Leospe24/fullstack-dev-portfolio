@@ -127,26 +127,28 @@ function App() {
         </div>
 
         <div
-          className={`hidden md:flex space-x-8 text-sm font-medium ${isDark ? "text-slate-400" : "text-slate-600"}`}
+          className={`hidden md:flex space-x-8 text-sm font-medium ${isDark ? "text-slate-300" : "text-slate-600"}`}
         >
           <a href="#projects" className="hover:text-cyan-400 transition-colors">
-            Projects
+            {" "}
+            Projects{" "}
           </a>
           <a href="#skills" className="hover:text-cyan-400 transition-colors">
-            Skills
+            {" "}
+            Skills{" "}
           </a>
           <a href="#about" className="hover:text-cyan-400 transition-colors">
-            About
+            {" "}
+            About{" "}
           </a>
           <a href="#contact" className="hover:text-cyan-400 transition-colors">
-            Contact
+            {" "}
+            Contact{" "}
           </a>
-          {/* Updated Resume Link in Nav */}
           <a
             href="/LEO_RESUME.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            download="Patrick_Anim_Resume.pdf"
             className="flex items-center gap-1 text-cyan-400 hover:text-cyan-300 transition-colors"
           >
             <Download size={14} /> Resume
@@ -189,7 +191,7 @@ function App() {
               </span>
             </h2>
             <p
-              className={`max-w-2xl text-lg md:text-xl mb-12 leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}
+              className={`max-w-2xl text-lg md:text-xl mb-12 leading-relaxed ${isDark ? "text-slate-300" : "text-slate-700"}`}
             >
               {PROFILE_DATA.heroDescription}
             </p>
@@ -420,12 +422,12 @@ function App() {
             {/* Glow Effect */}
             <div className="absolute -inset-4 bg-linear-to-tr from-blue-600 to-cyan-400 rounded-3xl blur-2xl opacity-10 group-hover:opacity-20 transition-opacity"></div>
 
-            {/* Profile Image Container */}
+            {/* Profile Image Container - Added w_600 to Cloudinary URL for optimization */}
             <div
               className={`relative aspect-square rounded-3xl overflow-hidden border-2 shadow-2xl ${isDark ? "border-slate-800" : "border-white"}`}
             >
               <img
-                src="https://res.cloudinary.com/dush99zlh/image/upload/f_auto,q_auto/v1768755771/leo_zsgwak.png"
+                src="https://res.cloudinary.com/dush99zlh/image/upload/f_auto,q_auto,w_600/v1768755771/leo_zsgwak.png"
                 alt="Patrick Anim - Software Engineer"
                 loading="lazy"
                 width={600}
@@ -437,7 +439,9 @@ function App() {
             {/* Experience Badge */}
             <div className="absolute -bottom-6 -right-6 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800">
               <p className="text-4xl font-black text-blue-600">IPMC</p>
-              <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500">
+              <p
+                className={`text-[10px] uppercase tracking-[0.2em] font-bold ${isDark ? "text-slate-400" : "text-slate-500"}`}
+              >
                 Certified Engineer
               </p>
             </div>
@@ -463,22 +467,28 @@ function App() {
 
             <div className="grid grid-cols-2 gap-6 mt-8">
               <div>
-                <h4
+                {/* Changed h4 to h3 for proper heading hierarchy */}
+                <h3
                   className={`font-bold mb-1 italic text-sm underline decoration-cyan-400/30 ${isDark ? "text-white" : "text-slate-900"}`}
                 >
                   Technical Logic
-                </h4>
-                <p className="text-xs text-slate-500 font-medium">
+                </h3>
+                <p
+                  className={`text-xs font-medium ${isDark ? "text-slate-400" : "text-slate-500"}`}
+                >
                   {PROFILE_DATA.technicalLogic}
                 </p>
               </div>
               <div>
-                <h4
+                {/* Changed h4 to h3 for proper heading hierarchy */}
+                <h3
                   className={`font-bold mb-1 italic text-sm underline decoration-cyan-400/30 ${isDark ? "text-white" : "text-slate-900"}`}
                 >
                   UI Execution
-                </h4>
-                <p className="text-xs text-slate-500 font-medium">
+                </h3>
+                <p
+                  className={`text-xs font-medium ${isDark ? "text-slate-400" : "text-slate-500"}`}
+                >
                   {PROFILE_DATA.uiExecution}
                 </p>
               </div>
@@ -660,10 +670,15 @@ function App() {
         className={`py-12 border-t ${isDark ? "border-white/5 bg-[#0b1222]" : "border-slate-200 bg-slate-100"}`}
       >
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-sm text-slate-500 italic font-medium">
+          <p
+            className={`text-sm italic font-medium ${isDark ? "text-slate-400" : "text-slate-500"}`}
+          >
             © 2026 Patrick Anim. Accra, Ghana.
           </p>
-          <div className="flex gap-8 text-sm font-bold text-slate-500">
+          {/* Increased text contrast for the links container */}
+          <div
+            className={`flex gap-8 text-sm font-bold ${isDark ? "text-slate-300" : "text-slate-600"}`}
+          >
             <a
               href="https://github.com/Leospe24"
               className="hover:text-cyan-500 transition-colors"
@@ -680,13 +695,13 @@ function App() {
               About
             </a>
             <a
-              href="https://wa.me/233207946237" // Updated to match your primary contact number
+              href="https://wa.me/233544443408" // Syncing with your primary number
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[#25D366] transition-colors flex items-center gap-1.5 group"
               aria-label="Chat with Patrick on WhatsApp"
             >
-              {/* Modern Brand SVG for Footer */}
+              {/* Brand SVG remains the same */}
               <svg
                 viewBox="0 0 24 24"
                 className="w-4 h-4 fill-current transition-transform group-hover:scale-110"
