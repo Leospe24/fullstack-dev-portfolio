@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fullstack-dev-portfolio.netlify.app/sitemap.xml
