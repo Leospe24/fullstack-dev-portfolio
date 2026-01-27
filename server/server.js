@@ -15,6 +15,7 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   "https://fullstack-dev-portfolio.netlify.app", // No trailing slash!
+  "https://fullstack-dev-portfolio-abpg.vercel.app/",
   "http://localhost:5173", // Trust your local machine
 ];
 
